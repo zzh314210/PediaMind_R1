@@ -1,0 +1,63 @@
+你是一个论文专家，擅长论文写作，尤其是CS和NLP领域。我要在一天内写一篇paper投递EMNLP 2025 PALS workshop，我的idea如下
+{PediaMind-R1: 一个基于婴儿气质推理的育婴领域专业大模型 ，应用场景是在AI育儿，不仅要给出通用育儿建议，更要个性化的引入婴幼儿气质特征，research已经论证这对成长发展非常重要
+我的创新点主要是引入心理学，基于托马斯婴儿气质搭建婴儿气质养育建议图谱，一方面让模型学习权威的育儿百科，另一方面注入婴儿气质图谱，形成个性化的推理框架，真正懂婴儿。
+1. 模型目标介绍 
+PediaMind-R1 是一个 7B级的大型语言推理模型，专为个性化育婴场景设计。 
+核心目标 
+• 知识专业性：模型需掌握全面、权威的现代循证育婴知识（SFT知识注入实现）。  
+个性化推理能力: 模型必须能够理解并运用“婴儿气质”标签，针对不同特质的婴儿生
+成差异化的、合理的建议；根据婴儿气质的推理逻辑合理：模型需以清晰、结构化的方式输出其推理过程与最终建议，体现对婴儿个体的理解，增强其决策的可解释性（Lora+DPO实现）。
+
+。 2. 研发路径 
+选取Qwen2.5-7B-Instruct 作为基础模型，在此基础上 
+1）通过 全参数SFT 注入育婴领域专业知识 
+• 数据集准备：《崔玉涛育儿百科》 +qwen得到3,000-5,000 条高质量的“问题-标准答案”
+对，用于全参数微调。 
+• 训练方式：全参数SFT 
+2）采用 LORA 学习推理格式（每种气质有对应的知识图谱）
+• 目标： 教会模型理解“婴儿气质”，并掌握结构化的个性化推理格式 。推理格式如{"<think><temperment>困难型婴儿的核心特点是低节律性、高回避性、低适应性、高反应强度和偏消极心境。宝宝在新环境中大哭大闹、拒绝陌生人抱，正是高回避性和低适应性的典型表现。他们对新刺激反应强烈且适应缓慢，需要更多时间和支持来接受变化。</temperment><strategy>针对困难型婴儿，建立高度可预测的结构化环境和保持父母的情绪稳定是关键。这类孩子对规律和安全感的依赖极高，任何突然的变化都可能引发强烈反应。因此，养育策略应着重于提前准备、逐步引入新环境和保持一致性。</strategy>基于这些分析，建议采取以下具体步骤来帮助宝宝适应新环境和陌生人。</think><answer>1. 提前准备：在前往新环境前，用简单语言反复描述即将发生的事情（如“我们要去阿姨家，那里有玩具”），并带上熟悉的安抚物。\n2. 渐进式接触：到达后先抱着宝宝在远处观察，等其情绪稳定后再缓慢靠近新环境，不强迫互动。\n3. 陌生人接触：让陌生人先保持距离，通过共同游戏（如玩玩具）自然建立联系，绝对避免突然抱起。\n4. 保持规律：确保当天其他作息（进食、午睡）完全按日常规律进行，减少额外压力源。\n5. 情绪示范：父母自己要先放松愉快地与陌生人交谈，用平静的语气告诉宝宝“妈妈在这里很安全”。</answer>"}
+3）采用dpo偏好优化，主要是通过负样本规范模型的行为。
+}
+这样训练得到一个模型，我的contribution主要是1）育婴育儿领域的数据集 2）一个融合了气质理解和推理的推理模型 3）帮我再想一个contribution
+你需要帮我想一些模型评估的方法
+我的目标是1天内写完这篇paper，训练数据我都有，每次训练1小时都能跑完。所以你要给我最可行的方案，比如训练几个epoch，怎么防止过拟合
+你现在需要帮我生成论文写作框架，我写4页短paper
+会议的信息TAILORING AI:
+EXPLORING ACTIVE AND
+PASSIVE LLM
+PERSONALIZATION (PALS)
+Active and Passive LLM Personalization: When to personalize and what role do humans play in the personalization process?
+EMNLP 2025 in Suzhou, China from November 5-9
+Call for Papers
+Large language models (LLMs) have demonstrated remarkable capabilities in various NLP tasks. However, the extent to which these models can and should adapt to individual users' needs remains an open question. Therefore, this workshop will focus on the personalization of LLMs to meet individual user's needs and preferences. From the user's perspective the personalization process can be either passive, where the LLM learns from observing user behavior, or active, where the user directly guides the personalization. The questions of how to personalize effectively, when to personalize, which personalization paradigm to apply (active vs. passive) remain open questions that are important to address. Further, active and passive personalization each have several challenges and open questions in their own right.
+
+Successfully answering these kinds of questions inherently requires an interdisciplinary approach, combining expertise from a wide variety of fields, such as: NLP, human-computer interaction, linguistics, cognitive science, behavioral science, psychology, ethics, etc. Thus, the workshop will promote interdisciplinary research necessary for effective, user-first personalization, driving towards solving the challenges of passive and active personalization.
+🏆 Best Student Paper Award: We are excited to award the best student paper with an iPad!
+Topics
+We invite submissions related, but not limited, to the following topics in the space of active and passive LLM personalization:
+Algorithmic approaches (user persona/profile creation, in-context learning, RAG, parameter tuning, user representation learning, user-specific reasoning, etc.)
+Evaluation methods for offline and online use cases
+Potential risks of personalized LLMs (creating an echo chamber, limiting user exploration)
+User studies or surveys to understand when, where, and how active vs. passive personalization is effective
+Dataset creation and curation (collecting and curating a dataset from real users, creating and validating a synthetic dataset, identifying salient samples for personalization, etc.)
+Important Dates
+ARR submission deadline: May 19, 2025
+ARR commitment deadline: August 20 (tentative)
+Direct submission deadline: August 1 (Submission link)
+Notification of acceptance: September 10 (tentative)
+Camera ready deadline: September 17 (tentative)
+Workshop dates: To be announced. Collocated with EMNLP (Main Conference is November 5-9, 2025)
+Guidelines
+We follow the standard *ACL template, and welcome short (up to 4 pages) and long (up to 8 pages) papers. References and appendices are not included in the page limits.
+We welcome direct submissions via OpenReview, as well as submissions made through ARR. For submissions made through ARR, we will calibrate scores such that they are suitable for a workshop submission (for example if initially intended as a full conference paper).
+
+Submit directly via OpenReview: https://openreview.net/group?id=EMNLP/2025/Workshop/PALS
+
+See Important Dates for deadlines. Papers will be non-archival and can be published on preprint servers, such as ArXiv.
+We plan to have an archival and a non-archival option. Please check back for more details closer to the submission deadline.
+Dual Submissions
+We allow submissions under review at other venues, but please check the submission policies of the respective venues as this might be different.
+Anonymity Period
+There is no anonymity period.
+Reciprocal Reviewing
+It is expected that at least one author from each paper will review. Reviewers should expect a load of no more than 4 papers.

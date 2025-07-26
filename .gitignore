@@ -1,0 +1,17 @@
+# 虚拟环境
+.venv/
+
+# 模型文件和大文件
+models/
+*.pt
+*.bin
+*.ckpt
+
+# 缓存和日志
+__pycache__/
+*.log
+*.tmp
+*.bak
+
+# Jupyter 检查点（如果有用notebook）
+.ipynb_checkpoints/

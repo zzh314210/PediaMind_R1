@@ -1,0 +1,111 @@
+论文标题建议
+PediaMind-R1: Actively Personalizing Infant-Care LLMs via Psychological Labeling and Reward-Based Reasoning
+
+1. Introduction (~0.5页)
+内容要点
+LLM personalization 面临两大核心问题：1）何时个性化（when），2）人类扮演什么角色（who）；
+
+婴儿无法自我表达，其气质特征必须由成人代理获得 → 主动个性化（active personalization）；
+
+本文提出 PediaMind-R1，一个融合心理气质标签、医学知识推理、奖励优化的婴儿照护大语言模型；
+
+我们构建两套客观选择题评估集，分别测试模型对：①专业知识，②基于气质的推理建议能力；
+
+在四阶段训练（SFT → LoRA → DPO → GRPO）下逐步提升模型表现。
+
+2. Related Work & Motivation (~0.5页)
+2.1 Infant-Centric Personalization
+婴儿气质是发展心理学中可量化、结构化的稳定人格特征；
+
+托马斯气质量表广泛应用于干预、教育、护理等决策场景；
+
+但尚未被集成入大语言模型推理系统作为个性化标签。
+
+2.2 Model Personalization and Reward Optimization
+主动个性化常通过用户偏好标签或外部评分引导模型行为；
+
+当前主流对齐如 DPO 仅适用于 pairwise 偏好；
+
+我们提出基于 reward score 的 GRPO 方法，适配复杂推理任务的连续反馈优化。
+
+3. Methodology (~1.5页)
+图示：训练流程图（四阶段）
+ SFT → LoRA → DPO → GRPO
+
+3.1 SFT: Domain Knowledge Injection
+来源：权威百科《崔玉涛育儿百科》 → prompt-QA 样本（3k–5k）
+
+训练目标：学习准确回答专业知识问题
+
+验证方式：构建多项选择题测试集，评估模型对常识与生理规律的掌握
+
+3.2 LoRA: Temperament-Aware Output Structuring
+插入式参数训练，指导模型掌握结构化的 reasoning pattern
+
+利用心理学标签（困难型、容易型等）驱动差异化应对建议
+
+3.3 DPO: Preference Alignment for Safety Filtering
+构建偏好对（正确 vs 危险、不适应婴儿气质的建议）
+
+优化目标：使模型对风险建议保持拒答或规避倾向
+
+3.4 GRPO: Reward-Based Reasoning Optimization
+构造“婴儿气质+情境问题”选择题：
+
+每道题含 prompt + 多个选项 + 模型解释文本
+
+分数机制：答对 +2，分析涉及气质/因果链 +1（总分 0–3）
+
+使用 score 对模型输出 log-likelihood 加权，优化最终推理质量
+
+数据量：约 300–500 条，LoRA 插件方式微调完成
+
+4. Experiments and Results (~1页)
+4.1 Evaluation Tasks
+我们构建两套选择题测试集：
+
+任务	描述	数据量	样例
+Knowledge MCQ	无气质标签，考察基础医学知识	~300题	“第一产程平均多久？”
+Temperament MCQ	带气质背景，考察因婴儿个性差异给出应对策略的能力	~300题	“对于困难型婴儿，在睡前过度兴奋的情况下，最合适的方式是？”
+
+4.2 Ablation Setup
+对比五种模型：
+
+Baseline Qwen2.5
+
+SFT-only
+
++LoRA
+
++DPO
+
+Full (GRPO)
+
+4.3 Results
+Model	Knowledge Accuracy (%)	Temperament Accuracy (%)
+Qwen2.5	43.8	30.2
+SFT-only	81.2	42.0
++LoRA	81.0	63.4
++DPO	80.4	70.1
+Full (GRPO)	80.8	83.5
+
+知识题：SFT已接近饱和，GRPO基本无影响
+
+推理题：GRPO显著提升准确率（+13.4% over DPO）
+
+5. Discussion and Conclusion (~0.5页)
+5.1 Discussion
+气质标签是一种低成本、高解释力的人格建模方式，非常适合主动个性化场景；
+
+PediaMind-R1 表明：基于 reward 的细粒度自我优化（GRPO）比纯偏好选择（DPO）在复杂推理任务中更有效；
+
+所有评估均基于选择题正确率，结果稳定、可重复。
+
+5.2 Conclusion
+提出第一个将婴儿气质与个性化大语言模型结合的训练框架；
+
+全流程支持“从人类标签 → 推理能力提升”的闭环建模；
+
+GRPO 在个性化推理任务中显著提高准确性，验证 reward-driven alignment 方法的有效性；
+
+提供未来可迁移至其他人格建模场景（如老年照护、特殊教育）的方法论参考。

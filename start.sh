@@ -1,10 +1,10 @@
-CUDA_VISIBLE_DEVICES=2,3,4,5,6,7 accelerate launch --config_file "accelerate_config.yaml" train.py \
+CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 accelerate launch --config_file "accelerate_config.yaml" train.py \
     --model_name_or_path "./models/Qwen2.5-7B-Instruct" \
-    --data_path "./dataset/sftdata/sft.jsonl" \
+    --data_path "./dataset/sftdata/sft_mixed.jsonl" \
     --output_dir "./models/Qwen2.5-7B-Instruct-sft" \
     --max_seq_length 1024 \
-    --num_train_epochs 1.6 \
-    --per_device_train_batch_size 4 \
+    --num_train_epochs 1 \
+    --per_device_train_batch_size 2 \
     --gradient_accumulation_steps 8 \
     --learning_rate 1e-5 \
     --lr_scheduler_type "cosine" \

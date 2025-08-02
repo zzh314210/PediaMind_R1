@@ -1,9 +1,7 @@
-# 文件名: accelerate_config.yaml
+#accelerate_config_grpo.yaml
 compute_environment: LOCAL_MACHINE
-debug: false
 distributed_type: DEEPSPEED
 downcast_bf16: 'no'
-enable_cpu_affinity: false
 machine_rank: 0
 main_training_function: main
 mixed_precision: 'bf16'
@@ -11,18 +9,14 @@ num_machines: 1
 num_processes: 8
 rdzv_backend: static
 same_network: true
-tpu_env: []
 tpu_use_cluster: false
 tpu_use_sudo: false
 use_cpu: false
+
 deepspeed_config:
-  zero3_init_flag: false
-  zero_stage: 2
-  train_micro_batch_size_per_gpu: 4
-  gradient_accumulation_steps: 8
+  zero_optimization:
+    stage: 2
   gradient_clipping: "auto"
-  steps_per_print: 1
-  train_batch_size: "auto"
-  wall_clock_breakdown: false
-  bf16: 
+  bf16:
     enabled: true
+  steps_per_print: 1

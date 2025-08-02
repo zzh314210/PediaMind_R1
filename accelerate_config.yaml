@@ -1,4 +1,4 @@
-# 文件名: accelerate_config.yaml
+# accelerate_config.yaml
 compute_environment: LOCAL_MACHINE
 debug: false
 distributed_type: DEEPSPEED

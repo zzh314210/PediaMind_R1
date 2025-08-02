@@ -4,20 +4,22 @@ import os
 import json
 import time
 import requests
-from tasks import TASKS
+from newtasks import TASKS
 
 # --- 配置区 ---
 API_KEY = "sk-8a19d21d1c89453bb6176a36a261f18b"
 API_BASE_URL = "https://api.deepseek.com/v1"
 MODEL_NAME = "deepseek-chat"
-OUTPUT_FILE = "raw_output.txt"
+OUTPUT_FILE = "raw_output2.txt"
 
 # 指令模板
 GENERATOR_PROMPT_TEMPLATE = """
-# 角色
-你是一位专门为AI训练生成高质量数据的专家。
-# 任务
-你的任务是根据提供的【内置知识库】、【用户提问】和【婴儿气质类型】，生成一个完整的DPO（Direct Preference Optimization）训练数据样本。这个样本必须是一个包含`prompt`、`chosen`和`rejected`三个键的JSON对象。
+你是一个育婴专家，你的任务是回答家长的育婴提问，你需要根据婴幼儿的气质进行分析，给出合理的分析过程并给出答案
+你需要首先思考家长的提问，用自己的话重新表述家长正面临什么样的育婴问题
+接着你需要分析婴儿的气质特征，并分析婴儿当前的行为体现了什么气质特征<temperment></temperment>标签之间
+然后你需要分析婴儿当前行为和他气质特征对应的养育策略，分析放在<strategy></strategy>之间
+以上分析放在<think></think>标签之间
+最后给家长当前建议怎么做，放在<answer></answer>标签之间
 ---
 ### 【内置知识库：婴儿气质四分类与养育策略（基于托马斯与切斯理论）】
 #### ## 核心理论框架 (Core Theoretical Framework)
@@ -46,24 +48,15 @@ GENERATOR_PROMPT_TEMPLATE = """
     *   注意点1：采用“解构式”养育法: 不问“孩子是哪一型？”，而问“在‘这件事’上，孩子表现出了哪种特点？”
     *   注意点2：灵活性和观察力是关键: 灵活地在不同养育“工具箱”中切换，实现动态的“拟合优度”。
 ---
-### # 本次生成任务的输入
-*   用户提问: "{user_question}"
-*   婴儿气质类型: "{temperament_type}"
+家长的提问和婴儿的气质是
+*   "{prompt}"
 ---
-### # 输出要求
+
 请严格按照以下说明，生成一个JSON对象：
 1.  `prompt` (字符串):
-    *   格式必须是："用户提问：{user_question}\\n宝宝气质类型：{temperament_type}"。
-2.  `chosen` (字符串):
-    *   必须包含 `<think>` 和 `<answer>` 两个部分。
-    *   在 `<think>` 部分，必须使用流畅的自然语言展示推理过程：
-        1.  首先，将婴儿的具体行为与该气质的核心特点进行明确的关联和解释。这部分分析**必须**用 `<temperment>` 标签包裹。
-        2.  接着，基于这些特点，总结出对应的核心养育策略，并解释其有效性。这部分策略**必须**用 `<strategy>` 标签包裹。
-        3.  最后，自然地过渡到将要给出的具体建议。
-    *   在 `<answer>` 部分，提供具体、可操作、并且与`<think>`中策略相符的育儿建议。
-3.  `rejected` (字符串):
-    *   **必须**只包含 `<answer>` 部分，绝不能包含 `<think>` 思维链。
-    *   `rejected`中的建议**必须是通用的、不基于特定气质分析的育儿建议**。它应该看起来合理，但质量低于`chosen`中基于深度气质分析得出的建议。
+    *   {prompt}
+2.  `response` (字符串):
+    *   思考推理过程<think>和最终建议<answer>
 ---
 ### # 最终输出（请直接生成这个JSON对象，不要有任何其他多余的文字）
 """

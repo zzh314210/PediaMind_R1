@@ -56,16 +56,23 @@ def process_data(data_args: DataArguments, tokenizer: AutoTokenizer):
         raw_data = [json.loads(line) for line in f]
 
     def format_to_chat_prompt(example):
-        messages = [{"role": "user", "content": example["prompt"]}, {"role": "assistant", "content": example["response"]}]
+        system_prompt = (
+            "你是一位专业、温柔且具有共情心的育儿顾问，擅长结合科学知识与家庭实际情况，"
+            "为家长提供可信赖的建议。对于用户的问题，你需要给出专业的回答，如果用户情绪上需要安抚，你的回答需要起到安抚的效果。"
+        )
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": example["prompt"]},
+            {"role": "assistant", "content": example["response"]}
+        ]
         prompt = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=False)
         return {"text": prompt}
+
 
     formatted_data_list = [format_to_chat_prompt(ex) for ex in raw_data]
     dataset = Dataset.from_list(formatted_data_list)
 
     def tokenize_function(examples):
-        # 修改点：将 padding=False 改为 padding="max_length"
-        # 这会确保所有序列在预处理阶段就被填充到相同的长度，解决了在批处理时因长度不一而导致的错误。
         tokenized_output = tokenizer(
             examples["text"], 
             truncation=True, 
@@ -98,11 +105,12 @@ def main():
         logger.info("Enabling gradient checkpointing...")
         model.gradient_checkpointing_enable()
 
-    tokenized_dataset = process_data(data_args, tokenizer)
-    
+    tokenized_dataset = process_data(data_args, tokenizer)   #20250726
+        
     if not tokenized_dataset:
         logger.error("Data processing returned an empty dataset. Exiting.")
         return
+
 
     data_collator = DataCollatorForLanguageModeling(tokenizer=tokenizer, mlm=False)
 
@@ -113,6 +121,7 @@ def main():
         train_dataset=tokenized_dataset,
         data_collator=data_collator,
     )
+
 
     logger.info("Trainer initialized. Starting training...")
     train_result = trainer.train(resume_from_checkpoint=training_args.resume_from_checkpoint)

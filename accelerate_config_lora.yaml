@@ -1,0 +1,32 @@
+# accelerate_config_lora.yaml
+compute_environment: LOCAL_MACHINE
+distributed_type: DEEPSPEED
+downcast_bf16: 'no'
+machine_rank: 0
+main_training_function: main
+mixed_precision: 'bf16'
+num_machines: 1
+num_processes: 8
+rdzv_backend: static
+same_network: true
+tpu_use_cluster: false
+tpu_use_sudo: false
+use_cpu: false
+
+deepspeed_config:
+  zero_optimization:
+    stage: 2
+    offload_optimizer:
+      device: none
+      pin_memory: true
+    allgather_partitions: true
+    allgather_bucket_size: 2e8
+    reduce_scatter: true
+    reduce_bucket_size: 2e8
+    contiguous_gradients: true
+    overlap_comm: true
+  gradient_clipping: 1.0
+  bf16:
+    enabled: true
+  steps_per_print: 10
+  wall_clock_breakdown: false
